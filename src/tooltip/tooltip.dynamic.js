@@ -16,7 +16,9 @@
 	
 	t.dynamic = {
 		conf: {
-			classNames: "top right bottom left"
+			classNames: "top right bottom left",
+			enableHorizontal: true,
+			enableVertical: true
 		}
 	};
 		
@@ -59,6 +61,10 @@
 	}
 	
 	// dynamic plugin
+	/****
+	 * @param enableHorizontal {Boolean}  @default true Dynamically switch position of the tooltip if its left or right side of the tooltip is getting cropped. 
+	 * @param enableVertical {Boolean}  @default true Dynamically switch position of the tooltip if its top or bottom side of the tooltip is getting cropped.
+	 ****/
 	$.fn.dynamic = function(conf) {
 		
 		if (typeof conf == 'number') { conf = {speed: conf}; }
@@ -113,16 +119,16 @@
 				if (!isVisible(crop)) {
 					
 					// change the position and add class
-					if (crop[2]) { $.extend(tipConf, conf.top);		tipConf.position[0] = 'top'; 		tip.addClass(cls[0]); }
-					if (crop[3]) { $.extend(tipConf, conf.right);	tipConf.position[1] = 'right'; 	tip.addClass(cls[1]); }					
-					if (crop[0]) { $.extend(tipConf, conf.bottom); 	tipConf.position[0] = 'bottom';	tip.addClass(cls[2]); } 
-					if (crop[1]) { $.extend(tipConf, conf.left);		tipConf.position[1] = 'left'; 	tip.addClass(cls[3]); }					
+					if (crop[2] && conf.enableVertical) { $.extend(tipConf, conf.top);		tipConf.position[0] = 'top'; 		tip.addClass(cls[0]); }
+					if (crop[3] && conf.enableHorizontal) { $.extend(tipConf, conf.right);	tipConf.position[1] = 'right'; 	tip.addClass(cls[1]); }					
+					if (crop[0] && conf.enableVertical) { $.extend(tipConf, conf.bottom); 	tipConf.position[0] = 'bottom';	tip.addClass(cls[2]); } 
+					if (crop[1] && conf.enableHorizontal) { $.extend(tipConf, conf.left);		tipConf.position[1] = 'left'; 	tip.addClass(cls[3]); }					
 					
 					// vertical offset
-					if (crop[0] || crop[2]) { tipConf.offset[0] *= -1; }
+					if ((crop[0] || crop[2]) && conf.enableVertical) { tipConf.offset[0] *= -1; }
 					
 					// horizontal offset
-					if (crop[1] || crop[3]) { tipConf.offset[1] *= -1; }
+					if ((crop[1] || crop[3]) && conf.enableHorizontal) { tipConf.offset[1] *= -1; }
 				}  
 				
 				tip.css({visibility: 'visible'}).hide();
